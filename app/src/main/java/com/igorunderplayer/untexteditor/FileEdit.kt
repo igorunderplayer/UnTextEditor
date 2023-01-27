@@ -31,7 +31,7 @@ class FileEdit : AppCompatActivity() {
 
     private var fileStream: InputStream? = null
 
-    public var textFile: TextFile? = null
+    private var textFile: TextFile? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +44,7 @@ class FileEdit : AppCompatActivity() {
             textFile?.updateText(textView.text.toString())
             try {
                 textFile?.let { file ->
-                    contentResolver.openFileDescriptor(file.fileUri, "wt")?.use {
+                    contentResolver.openFileDescriptor(file.fileUri, "wt")?.use { it ->
                         FileOutputStream(it.fileDescriptor).use {
                             it.write(textFile?.inputStream?.readBytes())
                             Toast.makeText(this, "Salvo com sucesso!", Toast.LENGTH_SHORT).show()
@@ -62,12 +62,9 @@ class FileEdit : AppCompatActivity() {
 
         if (Intent.ACTION_VIEW == action) {
             val uri = intent.data
-
-            Log.d("ta aqui o uri", uri.toString())
-
             openFile(uri!!)
         } else {
-            Log.d("Uai", "intent was something else: $action")
+            Log.d("FileEdit", "intent was something else: $action")
         }
     }
 
@@ -98,7 +95,7 @@ class FileEdit : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == PICK_TEXT_FILE && resultCode == RESULT_OK) {
-            Log.d("Arquivo aberto", data?.data.toString())
+            Log.d("FileEdit:file_picked:", data?.data.toString())
 
 
             data?.data?.also { documentUri ->
@@ -110,10 +107,9 @@ class FileEdit : AppCompatActivity() {
             }
         } else {
             if (requestCode == 2296) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (SDK_INT >= Build.VERSION_CODES.R) {
                     if (!Environment.isExternalStorageManager()) {
-                        Toast.makeText(this, "Allow permission for storage access!", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(this, "Allow permission for storage access!", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -121,7 +117,7 @@ class FileEdit : AppCompatActivity() {
     }
 
     private fun requestPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (SDK_INT >= Build.VERSION_CODES.R) {
             try {
                 val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
                 intent.addCategory("android.intent.category.DEFAULT")

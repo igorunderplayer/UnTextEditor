@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         saveButton = findViewById(R.id.saveButton)
 
         testButton.setOnClickListener {
-            Log.d("Clicou", "clicou no botao")
+            Log.d("Main:openFile", "Open file button clicked")
 
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
@@ -70,9 +70,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == PICK_TEXT_FILE && resultCode == RESULT_OK) {
-            Log.d("Arquivo aberto", data?.data.toString())
-
-
+            Log.d("Main:file_picked:", data?.data.toString())
 
             data?.data?.also { documentUri ->
                 contentResolver.takePersistableUriPermission(
